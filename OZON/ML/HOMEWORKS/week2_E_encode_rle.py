@@ -15,3 +15,6 @@ def encode_rle(x):
     result[0].append(prevElement)
     result[1].append(currentCount)
     return result
+
+
+
