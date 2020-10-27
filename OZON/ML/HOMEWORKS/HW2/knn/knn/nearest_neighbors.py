@@ -35,11 +35,9 @@ class NearestNeighborsFinder:
         cuttedSortedIndexes = np.argsort(values, axis=axis)
 
         resultDistances = np.take_along_axis(values, cuttedSortedIndexes, axis=axis)
-        resulIndicies = np.take_along_axis(indexes, cuttedSortedIndexes, axis=axis)
-        resultIndicies = np.tile(resulIndicies[:, 0].reshape(-1, 1), top)
-        assert(resultDistances.shape == (m, top))
+        resultIndicies = np.take_along_axis(indexes, cuttedSortedIndexes, axis=axis)
 
         if return_distance:
-            return (resultDistances, resulIndicies)
+            return (resultDistances, resultIndicies)
         else:
-            return resulIndicies
+            return resultIndicies

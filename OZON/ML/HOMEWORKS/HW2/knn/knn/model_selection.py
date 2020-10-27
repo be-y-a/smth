@@ -30,11 +30,21 @@ def knn_cross_val_score(X, y, k_list, scoring, cv=None, **kwargs):
     for train_index, test_index in cv.split(X):
         X_train, X_test = X[train_index], X[test_index]
         y_train, y_test = y[train_index], y[test_index]
+<<<<<<< HEAD
         clf = KNNClassifier(n_neighbors=np.max(k_list),
                             algorithm=algorithm,
                             metric=metric,
                             weights=weights
                             )
+=======
+        clf = BatchedKNNClassifier(n_neighbors=NEIGHBOURS_COUNT, algorithm=algorithm, metric=metric, weights=weights)
+        clf.set_batch_size(1000)
+#         clf = KNNClassifier(n_neighbors=np.max(k_list),
+#                             algorithm=algorithm,
+#                             metric=metric,
+#                             weights=weights
+#                             )
+>>>>>>> 1af335bb7bc50eaa9cf5c807730bf309052fde79
         clf.fit(X_train, y_train)
         distances, indices = clf.kneighbors(X_test, return_distance=True)
         for k in k_list:
