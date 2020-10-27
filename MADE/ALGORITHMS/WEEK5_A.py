@@ -75,7 +75,8 @@ class OpenAddressingMap:
             
     DEFAULT_CAPACITY = int(1e7)
     DUMMY_NODE = Node(int(1e9) + 1, int(1e9) + 1)
-
+    BIG_PRIME_NUMBER = 1_000_000_007
+    STRING_HASH_MULTIPLIER = 31
 
     def __init__(self):
         self.capacity = self.DEFAULT_CAPACITY
@@ -83,14 +84,19 @@ class OpenAddressingMap:
 
 
     def getIndex(self, key):
-        result = abs(key)
-        result *= 31
-        return result % self.capacity
+        return self.__getHash(key) % self.capacity
 
 
+    def __getHash(self, string):
+        hashResult = 0
+
+        for x in string:
+            hashResult = (hashResult * self.STRING_HASH_MULTIPLIER + ord(x)) % self.BIG_PRIME_NUMBER
+
+        return hashResult   
 
     def insertNode(self, key, value):
-        node = Node(key, value)
+        node = OpenAddressingMap.Node(key, value)
         index = self.getIndex(key)
 
         while self.storage[index] is not None  \
@@ -100,10 +106,10 @@ class OpenAddressingMap:
             index += 1
             index %= self.capacity
 
-            self.storage[index] = node
+        self.storage[index] = node
 
 
-    def deleteNode(self, key):
+    def remove(self, key):
         index = self.getIndex(key)
 
         while self.storage[index] is not None:
@@ -115,7 +121,7 @@ class OpenAddressingMap:
 
 
 
-    def contains(self, key): 
+    def __contains__(self, key): 
         return self[key] is not None
 
     
@@ -133,13 +139,14 @@ class OpenAddressingMap:
 
 
 class ProblemSolver:
+    DUMMY_VALUE = -1
 
     def solve(self):
-        storage = set()
+        storage = OpenAddressingMap()
         for line in stdin:
             command, value = line.split()
             if command == "insert":
-                storage.add(value)
+                storage.insertNode(value, self.DUMMY_VALUE)
             elif command == "exists":
                 result = "true" if value in storage else "false"
                 print(result)
