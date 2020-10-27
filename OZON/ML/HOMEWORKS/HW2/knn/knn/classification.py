@@ -27,10 +27,31 @@ class KNNClassifier:
         return self
 
     def _predict_precomputed(self, indices, distances):
-        raise NotImplementedError()
+        testCount = indices.shape[0]
+        labelsTiled = np.tile(self._labels, (testCount, 1))
+        labelsMatrix = np.take_along_axis(labelsTiled, indices, axis=1)
+        neighbourCount = indices.shape[1]
+        if self._weights == "uniform":
+            result = np.apply_along_axis(lambda x: np.argmax(np.bincount(x)), 1, labelsMatrix)
+            return result
+        elif self._weights == "distance":
+            weightMatrix = 1.0 / (distances + self.EPS)
+            gluedLabelsDistancesMatrix = np.hstack((labelsMatrix, weightMatrix))
+            def optLabel(labelsAndDistances):
+                intLabels = labelsAndDistances[:neighbourCount].astype(np.int)
+                distancesSubArray = labelsAndDistances[neighbourCount:]
+                bc = np.bincount(intLabels, distancesSubArray)
+                return np.argmax(bc)
+           
+            result = np.apply_along_axis(optLabel, 1, gluedLabelsDistancesMatrix)
+            return result
+        else:
+            raise ValueError("Weighted algorithm is not supported")
+        return indices
 
     def kneighbors(self, X, return_distance=False):
         return self._finder.kneighbors(X, return_distance=return_distance)
+
 
     def predict(self, X):
         distances, indices = self.kneighbors(X, return_distance=True)
