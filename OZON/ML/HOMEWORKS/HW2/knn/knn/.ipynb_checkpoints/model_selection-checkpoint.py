@@ -22,8 +22,11 @@ def knn_cross_val_score(X, y, k_list, scoring, cv=None, **kwargs):
         raise TypeError("cv should be BaseCrossValidator instance", type(cv))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     raise not NotImplementedError()
 =======
+=======
+>>>>>>> 11e132d9ea3bb4e0640319448b058b86510769ce
     result = defaultdict(list)
 
     metric = kwargs.pop('metric', 'euclidean')
@@ -50,4 +53,7 @@ def knn_cross_val_score(X, y, k_list, scoring, cv=None, **kwargs):
         result[k] = np.asarray(v)
 
     return result
+<<<<<<< HEAD
 >>>>>>> 1af335bb7bc50eaa9cf5c807730bf309052fde79
+=======
+>>>>>>> 11e132d9ea3bb4e0640319448b058b86510769ce
